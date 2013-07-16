@@ -28,7 +28,11 @@ var HTMLFILE_DEFAULT = "index.html";
 var HTMLFILE_PAGE = "page.html";
 var CHECKSFILE_DEFAULT = "checks.json";
 var sys = require('util'),
+<<<<<<< HEAD
     rest = require('restler');
+=======
+    rest = require('./restler');
+>>>>>>> f1e4670c46972258d8b7563a8dfbe30c9a8fe2e1
 
 var assertFileExists = function(infile) {
     var instr = infile.toString();
@@ -65,6 +69,7 @@ var clone = function(fn) {
 };
 
 if(require.main == module) {
+<<<<<<< HEAD
   program
   .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
   .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
@@ -82,6 +87,36 @@ if(require.main == module) {
 }
 var outJson = JSON.stringify(checkJson, null, 4);
 console.log(outJson);
+=======
+    program
+        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
+        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-u, --url <url_page>', 'URL to page', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .parse(process.argv);
+    
+    if (program.url){
+         rest.get(program.url).on('complete', function(result) {
+          if (result instanceof Error) {
+          sys.puts('Error: ' + result.message);
+          this.retry(5000); // try again after 5 sec
+          } else {
+            sys.puts(result);
+           }
+         });
+         
+         fs.writeFile('/page.html', result, function(err) {
+          if (err) throw err;
+          console.log('It\'s saved!');
+        });
+        var checkJson = checkHtmlFile(HTMLFILE_PAGE , program.checks);
+        else {
+         var checkJson = checkHtmlFile(program.file, program.checks);
+        }
+    }
+    
+    var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(outJson);
+>>>>>>> f1e4670c46972258d8b7563a8dfbe30c9a8fe2e1
 } else {
   exports.checkHtmlFile = checkHtmlFile;
 }
